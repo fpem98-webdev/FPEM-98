@@ -1,0 +1,54 @@
+Documentation de l'Algorithme FPEM 98
+Prérequis
+Avant d'utiliser l'algorithme FPEM 98, assurez-vous d'avoir installé les dépendances nécessaires. Cela inclut principalement le module cryptography pour Python.
+
+Pour installer cryptography, exécutez la commande suivante dans votre terminal :
+
+Copier le code
+pip install cryptography
+Assurez-vous d'exécuter cette commande dans l'environnement Python où vous prévoyez d'exécuter votre application.
+
+Introduction
+L'algorithme FPEM 98 utilise EdDSA pour la signature numérique et ChaCha20-Poly1305 pour le chiffrement symétrique. Il est conçu pour assurer la confidentialité et l'intégrité des données sensibles dans les applications nécessitant une sécurité élevée.
+
+Fonctionnalités
+Chiffrement Symétrique : Utilisation de ChaCha20-Poly1305 pour chiffrer les messages.
+Signature Numérique : Utilisation d'EdDSA pour signer et vérifier l'authenticité des messages.
+Dérivation de Clé : Utilisation de Scrypt pour dériver une clé AES à partir d'une clé secrète.
+Composants Principaux
+Génération de Paire de Clés Ed25519
+
+generate_ed_keypair(): Génère une paire de clés Ed25519 pour la signature numérique.
+Dérivation de Clé AES
+
+derive_aes_key(secret_key): Utilise Scrypt pour dériver une clé AES à partir d'une clé secrète.
+Chiffrement et Signature
+
+fpem98_encrypt(message, secret_key): Chiffre un message avec EdDSA pour la signature et ChaCha20-Poly1305 pour le chiffrement symétrique.
+fpem98_decrypt(encrypted_data, private_key, secret_key): Déchiffre des données chiffrées avec EdDSA et ChaCha20-Poly1305.
+Paramètres de Sécurité
+Longueur de la Clé AES : 256 bits (32 octets).
+Paramètres Scrypt :
+salt: Généré aléatoirement.
+length: 32 octets pour la clé dérivée.
+n: 2^20 itérations.
+r: 16 (facteur de mémoire).
+p: 1 (facteur parallèle).
+Exemples d'Utilisation
+Chiffrement et Déchiffrement
+python
+Copier le code
+import os
+import binascii
+from cryptography.hazmat.primitives.asymmetric import ed25519
+
+# Exemple de chiffrement
+message = "Bonjour, c'est un message secret à chiffrer."
+secret_key = os.urandom(64)  # Clé secrète plus longue pour une sécurité accrue
+
+encrypted_data = fpem98_encrypt(message, secret_key)
+print("Message chiffré:", encrypted_data)
+
+# Assumez que ed_private_key est déjà définie dans votre contexte
+decrypted_message = fpem98_decrypt(encrypted_data, ed_private_key, secret_key)
+print("Message déchiffré:", decrypted_message)
